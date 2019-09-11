@@ -1,0 +1,51 @@
+# 服务器信息配置
+server:
+  port: 8090
+
+spring:
+  # 项目名称
+  application:
+    name: sqlite-demo
+  # 开发环境
+  profiles:
+    active: dev
+  # jackson 自动配置
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+    time-zone: GMT+8
+
+  # 数据库链接池配置
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:D:/development/SQLite3/test1.db3
+    username:
+    password:
+    type: com.zaxxer.hikari.HikariDataSource
+
+pagehelper:
+  helperDialect: sqlite
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+# spring boot mybatis 自动配置
+mybatis:
+  mapper-locations: classpath*:mappers/*.xml
+  type-aliases-package: com.ifsaid.sqlite.entity
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: @project.description@
+    version: @project.version@
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+

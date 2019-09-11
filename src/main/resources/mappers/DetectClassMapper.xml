@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ifsaid.sqlite.mapper.DetectClassMapper">
+
+    <resultMap id="resultMap" type="DetectClass">
+        <id column="t_class_id" property="classId"/>
+        <result column="t_bean_name" property="beanName"/>
+        <result column="t_description" property="description"/>
+        <result column="t_class_path" property="classPath"/>
+        <result column="t_update_time" property="updateTime"/>
+        <result column="t_create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 查看所有数据，当数据量大的时候避免使用   List<T> findAll(); -->
+    <select id="findAll" resultMap="resultMap">
+        SELECT
+            t_class_id,
+            t_bean_name,
+            t_class_path,
+            t_description,
+            t_create_time,
+            t_update_time
+        FROM
+            tc_detect_class
+    </select>
+
+    <!-- 根据ID查询数据  T findById(ID id); -->
+    <select id="findById" parameterType="java.lang.Integer" resultMap="resultMap">
+        SELECT
+            t_class_id,
+            t_bean_name,
+            t_class_path,
+            t_description,
+            t_create_time,
+            t_update_time
+        FROM
+            tc_detect_class
+        WHERE t_class_id = #{id}
+    </select>
+
+    <!-- 新增数据  Integer save(T entity);   -->
+    <insert id="save" parameterType="DetectClass" useGeneratedKeys="true" keyProperty="classId">
+        INSERT INTO tc_detect_class (
+            t_class_id,
+            t_bean_name,
+            t_class_path,
+            t_description,
+            t_create_time,
+            t_update_time
+        )
+        VALUES
+            (
+                #{ classId },
+                #{ beanName },
+                #{ classPath },
+                #{ description },
+                #{ updateTime },
+                #{ createTime }
+            )
+    </insert>
+
+    <!--  批量新增数据 Integer batchSave(List<T> list);  -->
+    <insert id="batchSave" parameterType="java.util.List">
+        INSERT INTO tc_detect_class (
+        t_class_id,
+        t_bean_name,
+        t_class_path,
+        t_description,
+        t_create_time,
+        t_update_time
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{ item.classId },
+            #{ item.beanName },
+            #{ item.classPath },
+            #{ item.description },
+            #{ item.updateTime },
+            #{ item.createTime }
+            )
+        </foreach>
+    </insert>
+
+    <!--  修改数据，必须带 ID void update(T entity); -->
+    <update id="update" parameterType="DetectClass">
+        UPDATE tc_detect_class
+        <trim prefix="set" suffixOverrides=",">
+            <if test="beanName != null">t_bean_name = #{beanName},</if>
+            <if test="classPath != null">t_class_path = #{classPath},</if>
+            <if test="description != null">t_description = #{description},</if>
+            <if test="updateTime != null">t_update_time = #{updateTime},</if>
+            <if test="createTime != null">t_create_time = #{createTime},</if>
+        </trim>
+        WHERE t_class_id = #{ classId }
+    </update>
+
+    <!--  根据ID删除数据  Integer deleteById(ID id); -->
+    <delete id="deleteById">
+        DELETE FROM tc_detect_class WHERE t_class_id = #{id}
+    </delete>
+
+    <!--  根据ID判断数据是否存在  Integer count(ID id); -->
+    <select id="count" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tc_detect_class WHERE t_class_id = #{id}
+    </select>
+
+    <!-- 根据 beanName 查询 检测类 DetectionClassEntity findByBeanName(String beanName);  -->
+    <select id="findByBeanName" parameterType="java.lang.String" resultMap="resultMap">
+        SELECT
+            t_class_id,
+            t_bean_name,
+            t_class_path,
+            t_description,
+            t_create_time,
+            t_update_time
+        FROM
+            tc_detect_class
+        WHERE
+            t_bean_name =  #{beanName}
+    </select>
+
+</mapper>
